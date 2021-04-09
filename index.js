@@ -7,6 +7,8 @@ require('dotenv').config()
 
 const app = express()
 
+// https://github.com/Porgramming-Hero-web-course/full-stack-client-zabedbinsiraz
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2ruwh.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 console.log(uri)
 app.use(express.json())
@@ -62,7 +64,15 @@ client.connect(err => {
 });
 
 client.connect(err => {
+
   const orders = client.db("tShirtShop").collection("orders");
+
+  app.get('/allOrders',(req,res) => {
+    orders.find({})
+    .toArray((err,documents) => {
+     console.log(documents)
+    })
+  })
 
   app.post('/addOrder',(req,res)=>{
     const newOrder = req.body;
@@ -74,12 +84,7 @@ client.connect(err => {
     })
   }) 
 
-  app.get('/allOrders',(req,res) => {
-    orders.find({})
-    .toArray((err,documents) => {
-     console.log(documents)
-    })
-  })
+ 
 
 })
 
