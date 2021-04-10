@@ -31,6 +31,7 @@ client.connect(err => {
       res.send(shirts)
     })
   })
+  
 
   app.get('/tShirt/:id',(req,res) => {
     const id = ObjectId(req.params.id)
@@ -39,6 +40,7 @@ client.connect(err => {
       res.send(shirt[0])
     })
   })
+  
 
   app.post('/addProduct',(req,res)=>{
     const newShirt = req.body;
@@ -46,7 +48,8 @@ client.connect(err => {
     tShirtCollection.insertOne(newShirt)
     .then(result => {
       console.log('inserted one', result.insertedCount)
-      res.send(result.insertedCount > 0)
+      // res.send(result.insertedCount > 0)
+      res.redirect('/')
     })
   })
 
@@ -65,28 +68,26 @@ client.connect(err => {
 
 client.connect(err => {
 
-  const orders = client.db("tShirtShop").collection("orders");
+  const orderCollection = client.db("tShirtShop").collection("orders");
 
   app.get('/allOrders',(req,res) => {
-    orders.find({})
-    .toArray((err,documents) => {
-     console.log(documents)
+    orderCollection.find({buyerEmail: req.query.email})
+    .toArray((err,products) => {
+       console.log(products)
+       res.send(products)
     })
   })
 
   app.post('/addOrder',(req,res)=>{
     const newOrder = req.body;
     
-    orders.insertOne(newOrder)
+    orderCollection.insertOne(newOrder)
     .then(result => {
       console.log('inserted one', result.insertedCount)
       res.send(result.insertedCount > 0)
     })
   }) 
-
- 
-
-})
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
